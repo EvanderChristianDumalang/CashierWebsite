@@ -1,0 +1,34 @@
+#parse("/navbar.vm")
+#@mainLayout()
+<form method="post">
+    <div class="form-group">
+        <label> Username </label>
+        <input type="text" class="form-control" name="username" value="$account.getUsername()" required autofocus>
+    </div>
+    <div class="form-group">
+        <label> Password </label>
+        <input type="password" class="form-control" name="password" value="$account.getPassword()" required autofocus>
+    </div>
+    <div class="form-group">
+        <label>Account Type</label>
+        <select class="form-control" name="type">
+            #foreach($accountTypes in $accountTypeList)
+                #if($accountTypes.getType() != $account.getType())
+                    <option value="$accountTypes.getId()"> $accountTypes.getType() </option>
+                #else
+                    <option selected value="$accountTypes.getId()">$account.getType()</option>
+                #end
+            #end
+        </select>
+    </div>
+    <br><br>
+
+    <button type="submit" class="btn btn-success">
+        <i data-feather="save"></i> Save
+    </button>
+
+    <a href="$WebPath.getACCOUNT()">
+        <i data-feather="x"></i> Cancel
+    </a>
+</form>
+#end

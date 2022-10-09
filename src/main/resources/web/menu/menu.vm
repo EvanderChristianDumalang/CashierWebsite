@@ -1,0 +1,64 @@
+#parse("/navbar.vm")
+#@mainLayout()
+        <a href="$WebPath.getMENU_ADD()" class="btn btn-primary float-right">
+            <i data-feather="plus"></i> Add New Item
+        </a>
+        <br><br>
+
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Item Name</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+                #foreach($menu in $menuList)
+                    <tr>
+                        <td>$velocityCount</td>
+                        <td>$menu.getName()</td>
+                        <td>$menu.getPrice()</td>
+                        <td>
+                            <a href="$WebPath.getMENU()$menu.getId()/edit/">
+                                <i data-feather="edit"></i> Edit
+                            </a>
+
+                            <a href="#" data-toggle="modal" data-target="#deleteModal$menu.getId()">
+                                <i data-feather="trash-2"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                #end
+            </tbody>
+        </table>
+    #foreach( $menu in $menuList)
+    <div class="modal" id="deleteModal$menu.getId()" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete menu?</h5>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure want to delete $menu.getName() from inventory?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i data-feather="x"></i> Cancel
+                    </button>
+                    <form method="post" action="$WebPath.getMENU()$menu.getId()/delete/">
+                        <button type="submit" class="btn btn-danger">
+                            <i data-feather="trash-2"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    #end
+#end

@@ -1,0 +1,283 @@
+#parse("/navbar.vm")
+#@mainLayout()
+<style>
+    #snackbar {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+    }
+
+    #snackbar.show {
+        visibility: visible;
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @-webkit-keyframes fadein {
+        from {bottom: 0; opacity: 0;}
+        to {bottom: 30px; opacity: 1;}
+    }
+
+    @keyframes fadein {
+        from {bottom: 0; opacity: 0;}
+        to {bottom: 30px; opacity: 1;}
+    }
+
+    @-webkit-keyframes fadeout {
+        from {bottom: 30px; opacity: 1;}
+        to {bottom: 0; opacity: 0;}
+    }
+
+    @keyframes fadeout {
+        from {bottom: 30px; opacity: 1;}
+        to {bottom: 0; opacity: 0;}
+    }
+    a.btn-success{
+        overflow: hidden;
+        position: fixed;
+        bottom: 2%;
+        width: 100%;
+        right: 5%;
+    }
+    div.float-left{
+        overflow: hidden;
+        position: fixed;
+        bottom: 2%;
+        right: 75%;
+        width: 100%;
+    }
+    div.float-right {
+        overflow: hidden;
+        position: fixed;
+        bottom: 2%;
+        left: 75%;
+        width: 100%;
+    }
+
+    .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 16px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        -webkit-transition-duration: 0.4s; /* Safari */
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+
+    .button1 {
+        background-color: white;
+        color: black;
+        border: 2px solid #4CAF50;
+    }
+
+    .button1:hover {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+</style>
+
+<div class="row justify-content-center pt-3">
+    <div class="col-md-10 border" >
+        <br>
+        <h1>Menu</h1>
+        <table class="table table-striped table-hover justify-content-center">
+            <tbody>
+                #foreach($menu in $menuList)
+                <form method="post" action="$WebPath.getCHECKOUT()add/$menu.getId()/">
+                    <button type="submit" style="background-color: antiquewhite; border: 0; color: dodgerblue; margin: 8px 8px;"
+                            class="btn btn-primary">
+                        <img class ="filmImage"src = "$menu.getPicture()" width="100" height="100"></br>
+                        <label for="name">$menu.getName()</label></br>
+                        <label for="price">Rp $menu.getPrice()</label></br>
+                    </button>
+                </form>
+                #end
+            </thead>
+        </table>
+    </div></br></br>
+</div>
+
+<div class="modal" id="#paymentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Item?</h5>
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="close">
+                    <span aria-hidden="true">x</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<br>
+
+<div class="row justify-content-center pt-3">
+    <div class="col-md-10 border">
+        <br>
+        <h1>Transaction</h1>
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+                #foreach($menu in $checkout)
+                <tr>
+                    <td>$velocityCount</td>
+                    <td>$menu.getName()</td>
+                    <td>$menu.getQuantity()</td>
+                    <td>Rp$menu.getPrice()</td>
+                    <td>
+                        <a href="#" data-toggle="modal" data-target="#editModal$menu.getId()" class="mx-2">
+                            <i data-feather="edit"></i> Edit
+                        </a>
+                        <a href="#" data-toggle="modal" data-target="#deleteModal$menu.getId()">
+                            <i data-feather="trash-2"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                #end
+            </tbody>
+        </table>
+
+
+        <div class="float-right">
+
+            <h2>  Total : Rp.$totalPrice,-</h2>
+            <button type="button" class="btn btn-primary btn-success" style="height:40px;width:259px" data-toggle="modal" data-target="#paymentModal">Pay</button>
+
+
+
+
+        </div>
+
+        <div class="mx-2 center-align">
+
+            <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Payment</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp.</span>
+                                    </div>
+                                    <input type="number" min="0" class="form-control" name="payMoney"  required autofocus>
+                                </div>
+                                <br>
+                                <button type="submit" class="btn btn-success float-right">Pay</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    #foreach( $menu in $checkout)
+        <div class="modal" id="editModal$menu.getId()" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Item</h5>
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="close">
+                            <span aria-hidden="true">x</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="$WebPath.getCHECKOUT()edit/$menu.getId()/">
+                            <input type="hidden" class="form-control" name="id" value="$menu.getIdp()">
+                            <div class="form-group">
+                                <label> Item Name </label>
+                                <input type="text" class="form-control" name="name" value="$menu.getName()" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label> Quantity </label>
+                                <input type="number" min="1" max="$maxQty" class="form-control" name="quantity" value="$menu.getQuantity()" required autofocus>
+                            </div>
+
+                            <button type="submit" class="btn btn-success float-right">
+                                <i data-feather="save"></i> Save
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div hidden class="row justify-content-end mx-2">
+            <h2 class="float-left">Total : Rp$totalPay</h2>
+        </div>
+        <br>
+        #if($moneyInsufficient)
+            <h2 class="float-right" style="color: red">Not enough money!</h2>
+            <br><br>
+        #end
+
+        <div class="modal" id="deleteModal$menu.getId()" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete Item?</h5>
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="close">
+                            <span aria-hidden="true">x</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure want to delete $menu.getName() from Cart?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i data-feather="x"></i> Cancel
+                        </button>
+                        <form method="post" action="$WebPath.getCHECKOUT()delete/$menu.getId()/">
+                            <button type="submit" class="btn btn-danger">
+                                <i data-feather="trash-2"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function myFunction() {
+                var x = document.getElementById("snackbar");
+                x.className = "show";
+                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+            }
+        </script>
+
+    #end
+
+#end
